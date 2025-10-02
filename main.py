@@ -41,14 +41,14 @@ async def help_cmd(message: Message):
         "Yordam uchun: @itlive_09")
 
 user={}
-menu=["👨 Erkak ovoz  🇺🇿", "👩 Ayol ovoz  🇺🇿","Dmitry 🇷🇺","Svetlana 🇷🇺","Dariya 🇷🇺","GuyNeural 🇺🇸","Jenny 🇺🇸","Ryan 🇺🇸","Sonia 🇺🇸"]
-Menu1=ReplyKeyboardMarkup(keyboard=[
+menu=["👨 Erkak ovoz  🇺🇿", "👩 Ayol ovoz  🇺🇿","Ahmet 🇹🇷","EmelNeural 🇹🇷","Dmitry 🇷🇺","Svetlana 🇷🇺","Dariya 🇷🇺","Neural 🇺🇸","Jenny 🇺🇸","Ryan 🇺🇸","Sonia 🇺🇸"]
+Menu=ReplyKeyboardMarkup(keyboard=[
     [KeyboardButton(text=menu[0]),KeyboardButton(text=menu[1])],
-    [KeyboardButton(text=menu[2]),KeyboardButton(text=menu[3]),KeyboardButton(text=menu[4])],
-    [KeyboardButton(text=menu[5]),KeyboardButton(text=menu[6])],
-    [KeyboardButton(text=menu[7]),KeyboardButton(text=menu[8])]
+    [KeyboardButton(text=menu[2]),KeyboardButton(text=menu[3])],
+    [KeyboardButton(text=menu[4]),KeyboardButton(text=menu[5]),KeyboardButton(text=menu[6])],
+    [KeyboardButton(text=menu[7]),KeyboardButton(text=menu[8])],
+    [KeyboardButton(text=menu[9]),KeyboardButton(text=menu[10])]
 ],resize_keyboard=True,one_time_keyboard=True)
-
 
 
 @dp.message(Command(commands=["start"]))
@@ -56,7 +56,7 @@ async def start_handler(message: Message):
     await message.answer(f"""Assalomu allekum, {message.from_user.full_name}!
 Matn yuboring, men uni o‘zbek tilida ovoz qilib beraman.
 👉 Iltimos, ovoz turini tanlang:
-""",reply_markup=Menu1)
+""",reply_markup=Menu)
 
 @dp.message(F.text.in_(menu))
 async def choose_voice(message: Message):
@@ -69,31 +69,37 @@ async def choose_voice(message: Message):
             user[message.from_user.id] = "uz-UZ-MadinaNeural"
             await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[2]:
-            user[message.from_user.id] = "ru-RU-DmitryNeural"
+            user[message.from_user.id] = "tr-TR-AhmetNeural"
             await message.answer("✅ Erkak ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[3]:
-            user[message.from_user.id] = "ru-RU-SvetlanaNeural"
+            user[message.from_user.id] = "tr-TR-EmelNeural"
             await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[4]:
-            user[message.from_user.id] = "ru-RU-DariyaNeural"
-            await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
+            user[message.from_user.id] = "ru-RU-DmitryNeural"
+            await message.answer("✅ Erkak ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[5]:
-            user[message.from_user.id] = "en-US-GuyNeural"
+            user[message.from_user.id] = "ru-RU-SvetlanaNeural"
             await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[6]:
-            user[message.from_user.id] = "en-US-JennyNeural"
+            user[message.from_user.id] = "ru-RU-DariyaNeural"
             await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[7]:
-            user[message.from_user.id] = "en-GB-RyanNeural"
+            user[message.from_user.id] = "en-US-GuyNeural"
             await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
         elif T==menu[8]:
+            user[message.from_user.id] = "en-US-JennyNeural"
+            await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
+        elif T==menu[9]:
+            user[message.from_user.id] = "en-GB-RyanNeural"
+            await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
+        elif T==menu[10]:
             user[message.from_user.id] = "en-GB-SoniaNeural"
             await message.answer("✅ Ayol ovoz tanlandi! Endi matn yuboring.")
 
 
+
 @dp.message()
 async def message_handler(message: Message):
-    T = message.text
     try:
         if message.from_user.id not in user:
            await message.answer("⚠️ Avval ovoz tanlang: /start")
