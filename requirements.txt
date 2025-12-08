@@ -1,2 +1,3 @@
 aiogram
 edge_tts
+python-dotenv
