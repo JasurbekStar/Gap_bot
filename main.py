@@ -3,14 +3,14 @@ import logging
 import os
 import sys
 import edge_tts
-
+from dotenv from load_dotenv
 from aiogram import Bot, Dispatcher, Router, F, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile
-
-API = "8492831992:AAGO4Z3FYGER39ppw6-VRRny8ztxSAVwEEo"
+load_dotenv()
+API = os.getenv("API")
 
 
 dp = Dispatcher()
@@ -192,4 +192,5 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
+
 
