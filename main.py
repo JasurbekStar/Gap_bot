@@ -10,7 +10,7 @@ from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile
 
-API = "8492831992:AAHq_sz8luheiHCvXN7g68xNNnmNJfujhuE"
+API = "8492831992:AAGO4Z3FYGER39ppw6-VRRny8ztxSAVwEEo"
 
 
 dp = Dispatcher()
@@ -192,3 +192,4 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
+
