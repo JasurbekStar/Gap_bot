@@ -3,7 +3,7 @@ import logging
 import os
 import sys
 import edge_tts
-from dotenv from load_dotenv
+from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, Router, F, html
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
@@ -192,5 +192,6 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
+
 
 
