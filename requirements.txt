@@ -1,2 +1,2 @@
-aiogram
+aiogram=3.22.0
 edge_tts
