@@ -9,14 +9,17 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile
+
 load_dotenv()
 API = os.getenv("API")
-
 
 dp = Dispatcher()
 router = Router()
 dp.include_router(router)
 
+# --------------------------------------
+# 🔧 Bot komandalarini o‘rnatish
+# --------------------------------------
 async def default(bot: Bot):
     commands = [
         BotCommand(command="start", description="Start the bot"),
@@ -26,17 +29,21 @@ async def default(bot: Bot):
     await bot.set_my_commands(commands=commands)
 
 
+# --------------------------------------
+# 🎧 Matnni audio qilish (Edge TTS)
+# --------------------------------------
 async def ovoz(matn, filename="output.mp3", voice="uz-UZ-MadinaNeural"):
     max_len = 300
     chunks = [matn[i:i + max_len] for i in range(0, len(matn), max_len)]
-    tts = edge_tts.Communicate("", voice)
     temp_files = []
+
     for i, chunk in enumerate(chunks):
         temp_name = f"chunk_{i}.mp3"
         tts = edge_tts.Communicate(chunk, voice)
         await tts.save(temp_name)
         temp_files.append(temp_name)
 
+    # Barcha bo‘laklarni bitta MP3 ga yig‘ish
     with open(filename, "wb") as out_f:
         for t in temp_files:
             with open(t, "rb") as f:
@@ -46,6 +53,9 @@ async def ovoz(matn, filename="output.mp3", voice="uz-UZ-MadinaNeural"):
     return filename
 
 
+# --------------------------------------
+# 📌 /help komandasi
+# --------------------------------------
 @dp.message(Command(commands=["help"]))
 async def help_cmd(message: Message):
     await message.answer(
@@ -56,6 +66,9 @@ async def help_cmd(message: Message):
     )
 
 
+# --------------------------------------
+# 📌 /about komandasi
+# --------------------------------------
 @dp.message(Command(commands=["about"]))
 async def about(message: Message):
     await message.answer(
@@ -65,24 +78,19 @@ async def about(message: Message):
     )
 
 
+# --------------------------------------
+# 👤 Foydalanuvchi ovoz tanlashi
+# --------------------------------------
 user = {}
 
 menu = [
-    "👨‍🦰 Sardor 🇺🇿",
-    "👩 Madina 🇺🇿",
-    "👨‍🦱 Ahmet 🇹🇷",
-    "👩 Emel 🇹🇷",
-    "👨‍🦰 Dmitry 🇷🇺",
-    "👩 Svetlana 🇷🇺",
-    "👩‍🦰 Dariya 🇷🇺",
-    "🤖 Neural 🇺🇸",
-    "👩 Jenny 🇺🇸",
-    "👨 Ryan 🇺🇸",
-    "👩 Sonia 🇺🇸",
-    "👩 Emma 🇬🇧",
-    "👨 Brian 🇬🇧",
-    "👨‍🦱 Hamed 🇸🇦",
-    "👩‍🦱 Zariyah 🇸🇦"
+    "👨‍🦰 Sardor 🇺🇿", "👩 Madina 🇺🇿",
+    "👨‍🦱 Ahmet 🇹🇷", "👩 Emel 🇹🇷",
+    "👨‍🦰 Dmitry 🇷🇺", "👩 Svetlana 🇷🇺", "👩‍🦰 Dariya 🇷🇺",
+    "🤖 Neural 🇺🇸", "👩 Jenny 🇺🇸",
+    "👨 Ryan 🇺🇸", "👩 Sonia 🇺🇸",
+    "👩 Emma 🇬🇧", "👨 Brian 🇬🇧",
+    "👨‍🦱 Hamed 🇸🇦", "👩‍🦱 Zariyah 🇸🇦"
 ]
 
 Menu = ReplyKeyboardMarkup(
@@ -95,20 +103,10 @@ Menu = ReplyKeyboardMarkup(
         [KeyboardButton(text=menu[11]), KeyboardButton(text=menu[12])],
         [KeyboardButton(text=menu[13]), KeyboardButton(text=menu[14])]
     ],
-    resize_keyboard=True,
-    one_time_keyboard=True
+    resize_keyboard=True
 )
 
-
-@dp.message(Command(commands=["start"]))
-async def start_handler(message: Message):
-    await message.answer(
-        f"Assalomu alaykum,  {html.bold(message.from_user.full_name)}!\n"
-        "Men siz yozgan matnni ovozga aylantiraman.\n"
-        "👉 Iltimos, ovoz turini tanlang:",
-        reply_markup=Menu
-    )
-
+# Ovoz xaritasi
 mapping = {
     menu[0]: "uz-UZ-SardorNeural",
     menu[1]: "uz-UZ-MadinaNeural",
@@ -127,6 +125,7 @@ mapping = {
     menu[14]: "ar-SA-ZariyahNeural"
 }
 
+# Ovoz tanlanganda chiqadigan matn
 voice_gender = {
     menu[0]: "🧔 Erkak ovoz tanlandi (Sardor 🇺🇿)",
     menu[1]: "👩 Ayol ovoz tanlandi (Madina 🇺🇿)",
@@ -146,23 +145,46 @@ voice_gender = {
 }
 
 
+# --------------------------------------
+# ▶️ /start komandasi
+# --------------------------------------
+@dp.message(Command(commands=["start"]))
+async def start_handler(message: Message):
+    await message.answer(
+        f"Assalomu alaykum, {html.bold(message.from_user.full_name)}!\n"
+        "Men siz yozgan matnni ovozga aylantiraman.\n\n"
+        "👉 Iltimos, ovoz turini tanlang:",
+        reply_markup=Menu
+    )
+
+
+# --------------------------------------
+# 🔊 Ovoz tanlash
+# --------------------------------------
 @dp.message(F.text.in_(menu))
 async def choose_voice(message: Message):
     T = message.text
     voice = mapping.get(T)
+
     if voice:
         user[message.from_user.id] = voice
-        gender_text = voice_gender.get(T, "🔊 Ovoz tanlandi!")
-        await message.answer(f"✅ {gender_text}\nEndi matn yuboring.")
+        await message.answer(f"✅ {voice_gender.get(T)}\nEndi matn yuboring.")
 
+
+# --------------------------------------
+# 🎤 Matn yuborilganda audio yaratish
+# --------------------------------------
 @dp.message()
 async def message_handler(message: Message):
+    filename = None  # Xatolik bo‘lmasligi uchun oldindan e'lon qilindi
+
     try:
         if message.from_user.id not in user:
             await message.answer("⚠️ Avval ovoz tanlang: /start")
             return
 
         text = message.text.strip()
+
         if not text:
             await message.answer("⚠️ Bo‘sh matn yuborib bo‘lmaydi.")
             return
@@ -171,17 +193,22 @@ async def message_handler(message: Message):
         filename = f"audio_{message.chat.id}_{message.message_id}.mp3"
 
         await ovoz(text, filename, voice)
+
         audio = FSInputFile(filename)
         await message.answer_voice(audio, caption="🔊 Tayyor! ✅")
 
     except Exception as e:
         logging.error(f"❌ Xatolik: {e}")
         await message.answer("❌ Xatolik yuz berdi, qayta urinib ko‘ring.")
+
     finally:
-        if os.path.exists(filename):
+        if filename and os.path.exists(filename):
             os.remove(filename)
 
 
+# --------------------------------------
+# 🚀 Botni ishga tushirish
+# --------------------------------------
 async def main():
     logging.info("✅ Bot ishga tushmoqda...")
     bot = Bot(token=API, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
@@ -192,6 +219,3 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
-
-
-
