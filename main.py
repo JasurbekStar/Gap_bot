@@ -9,6 +9,11 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.filters import Command
 from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, BotCommand, FSInputFile
+from aiogram.client.session.aiohttp import AiohttpSession
+import AiohttpSession
+
+session = AiohttpSession(proxy="http://proxy.server:3128")
+
 
 load_dotenv()
 API = os.getenv("API")
@@ -174,7 +179,7 @@ async def message_handler(message: Message):
 
 async def main():
     logging.info("✅ Bot ishga tushmoqda...")
-    bot = Bot(token=API, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+    bot = Bot(token=API, default=DefaultBotProperties(parse_mode=ParseMode.HTML), session=session)
     await default(bot)
     await dp.start_polling(bot)
 
@@ -182,4 +187,5 @@ async def main():
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
+
 
