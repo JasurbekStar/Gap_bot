@@ -1,3 +1,4 @@
+aiohttp-socks
 aiofiles==25.1.0
 aiogram==3.23.0
 aiohappyeyeballs==2.6.1
